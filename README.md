@@ -1,1 +1,1 @@
-# HackED-2020-RecycleProject-NickAndrikIanThanh
+Team consists of Nick, Andrik, Ian and Thanh. We're NAIT now.
