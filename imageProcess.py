@@ -11,5 +11,4 @@ while(True):
                 grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
                 grayImg = cv2.resize(grayImg, (150, 150));
                 cv2.imshow("image", grayImg);
-                cv2.waitKey(0);
         

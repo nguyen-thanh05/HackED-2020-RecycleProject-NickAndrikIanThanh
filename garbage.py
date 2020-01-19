@@ -45,8 +45,8 @@ for i in range(1000):
 
 train_images = np.array(train_images,np.uint8)
 train_labels = np.array(train_labels,np.uint8)
-test_images = np.array(train_images,np.uint8)
-test_labels = np.array(train_labels,np.uint8)
+test_images = np.array(test_images,np.uint8)
+test_labels = np.array(test_labels,np.uint8)
 train_images = train_images/255.0
 test_images = test_images/255.0
 print(test_labels)
