@@ -12,6 +12,8 @@ int incomingByte = 0;
 
 uint8_t servonum = 0;
 
+int increment = 3;
+
 int recycleButton = 2;
 int compostButton = 3;
 int garbageButton = 4;
@@ -91,7 +93,7 @@ void compost()  {
   analogWrite(GREEN_LED, 255);
   analogWrite(BLUE_LED, 0);
   Serial.println(" This is compost");
-  for(int i = 90; i <= 170; i+= 4)  {
+  for(int i = 90; i <= 170; i+= increment)  {
     setServoAngle(0, i);
     delay(200);
   }
@@ -101,7 +103,7 @@ void compost()  {
   setServoAngle(1, 10);
   delay(500);
   setServoAngle(0, 90);
-  for(int i = 170; i > 90; i-= 4)  {
+  for(int i = 170; i > 90; i-= increment)  {
     setServoAngle(0, i);
     delay(200);
   }
@@ -117,7 +119,7 @@ void garbage()  {
   analogWrite(GREEN_LED, 0);
   analogWrite(BLUE_LED, 0);
   Serial.println(" This is garbage");
-  for(int i = 90; i >= 10; i-= 4)  {
+  for(int i = 90; i >= 10; i-= increment)  {
     setServoAngle(0, i);
     delay(200);
   }
@@ -126,7 +128,7 @@ void garbage()  {
   delay(2000);
   setServoAngle(1, 10);
   delay(500);
-  for(int i = 10; i < 90; i+= 4)  {
+  for(int i = 10; i < 90; i+= increment)  {
     setServoAngle(0, i);
     delay(200);
   }
@@ -182,6 +184,33 @@ void colorFade()  {
   }
 }
 
+void red()  {
+  analogWrite(RED_LED, 255);
+  analogWrite(GREEN_LED, 0);
+  analogWrite(BLUE_LED, 0);
+}
+
+void green()  {
+  analogWrite(RED_LED, 0);
+  analogWrite(GREEN_LED, 255);
+  analogWrite(BLUE_LED, 0);
+}
+
+void blue() {
+  analogWrite(RED_LED, 0);
+  analogWrite(GREEN_LED, 0);
+  analogWrite(BLUE_LED, 255);
+}
+
+
+void lightsOff()  {
+  analogWrite(RED_LED, 0);
+  analogWrite(GREEN_LED, 0);
+  analogWrite(BLUE_LED, 0);
+}
+
+
+
 
 void loop() {
   if (Serial.available() > 0) {
@@ -212,6 +241,23 @@ void loop() {
     else if(incomingByte == 102) {
       colorFade();
     }
+
+    else if(incomingByte == 48) {
+      lightsOff();
+    }
+
+    else if(incomingByte == 49) {
+      red();
+    }
+
+    else if(incomingByte == 50) {
+      green();
+    }
+
+    else if(incomingByte == 51) {
+      blue();
+    }
+
   }
 
 
