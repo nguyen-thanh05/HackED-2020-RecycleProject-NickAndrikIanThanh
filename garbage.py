@@ -23,7 +23,7 @@ for a in folder:
         for b in mylist:
             img = cv2.imread("dataset-resized/" + a + "/" + b);
             #grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
-            grayImg = cv2.resize(img, (250, 250));
+            grayImg = cv2.resize(img, (150, 150));
             if (count <=3):
                 test_images.append(grayImg)
                 test_labels.append(class_names.index(a))
@@ -51,26 +51,33 @@ test_images = test_images/255.0
 print(test_labels)
 
 model = keras.Sequential([
-    keras.layers.Flatten(input_shape = (250,250,3)),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
-    keras.layers.Dense(128, activation = "relu"),
+    #keras.layers.Flatten(input_shape = (150,150,3)),
+    # ~ keras.layers.Dense(128, activation = "relu", input_dim = (150*150*3)),
+    # ~ keras.layers.Dropout(0.5),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dropout(0.5),
+    keras.layers.Conv2D(32, (3, 3), activation = "relu", input_shape = (150,150,3)),
+    keras.layers.Conv2D(32, (3, 3), activation = "relu"),
+    keras.layers.MaxPooling2D(),
+    keras.layers.Conv2D(32, (3, 3), activation = "relu"),
+    keras.layers.Conv2D(32, (3, 3), activation = "relu"),
+    keras.layers.MaxPooling2D(),
+    keras.layers.Flatten(),#input_shape = (150,150,3)),
+    keras.layers.Dense(256, activation = "relu"),
+    keras.layers.Dropout(0.5),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
+    # ~ keras.layers.Dense(256, activation = "relu"),
     keras.layers.Dense(6, activation = "softmax")
     ])
 model.compile(optimizer = "adam", loss = "sparse_categorical_crossentropy", metrics = ["accuracy"])
-model.fit(train_images, train_labels, epochs = 20)
+model.fit(train_images, train_labels, epochs = 30)
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 print("tested acc: ", test_acc)
 prediction = model.predict(test_images)
