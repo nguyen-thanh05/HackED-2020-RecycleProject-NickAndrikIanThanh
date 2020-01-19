@@ -1,0 +1,11 @@
+open serial monitor (ctrl-shift-m), press a key and then hit enter to execute.
+
+Dump recycling: r
+Dump compost: c
+Dump garbage: g
+color fade: f
+random color with movement: p
+set lights to 100% red: 1
+set lights to 100% green: 2
+set lights to 100% blue: 3
+set lights to off: 0
