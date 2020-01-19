@@ -1,4 +1,9 @@
 //***********************************************/
+/* Arduino code written by Andrik Jacobsen for hackED 2020.
+ *  This is the code that is running on the Arduino Uno on our robot. The Uno has a pwm servo shield attached to it
+ *  for controlling the two servos on the arm. Power is supplied through a 12v power supply that is split between the
+ *  MOSFETs for the RGB LED strip and a variable voltage regulator that powers the remaining circuits.
+ */
 
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
@@ -26,50 +31,28 @@ int gBright = 0;
 int rBright = 0;
 int bBright = 0;
 
-
 void setup() {
   Serial.begin(9600);
   Serial.println("TrashBot9000!!!");
-
   pwm.begin();
-  
   pwm.setPWMFreq(60);
-
   yield();
-
   pinMode(recycleButton, INPUT_PULLUP);
-
   pinMode(compostButton, INPUT_PULLUP);
-
   pinMode(garbageButton, INPUT_PULLUP);
-
   pinMode(GREEN_LED, OUTPUT);
   pinMode(RED_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
-  
 }
 
-void setServoPulse(uint8_t n, double pulse) {
-  double pulselength;
-  
-  pulselength = 1000000;   // 1,000,000 us per second
-  pulselength /= 60;   // 60 Hz
-  Serial.print(pulselength); Serial.println(" us per period"); 
-  pulselength /= 4096;  // 12 bits of resolution
-  Serial.print(pulselength); Serial.println(" us per bit"); 
-  pulse *= 1000;
-  pulse /= pulselength;
-  Serial.println(pulse);
-  pwm.setPWM(n, 0, pulse);
-}
-
+//takes an input of which servo and a degree (between 0 and 180) and sets that servo to that angle
 void setServoAngle(int servonum, int servoDegree) {
     uint16_t pulselength = map(servoDegree, 0, 180, SERVOMIN, SERVOMAX);
     pwm.setPWM(servonum, 0, pulselength);
     Serial.println(servoDegree);
 }
 
-
+//sets the lights to blue and dumps in the recycling location
 void recycling()  {
   analogWrite(RED_LED, 0);
   analogWrite(GREEN_LED, 0);
@@ -87,7 +70,7 @@ void recycling()  {
   analogWrite(BLUE_LED, 0);
 }
 
-
+//sets the lights to green and dumps in the compost location
 void compost()  {
   analogWrite(RED_LED, 0);
   analogWrite(GREEN_LED, 255);
@@ -113,7 +96,7 @@ void compost()  {
   analogWrite(BLUE_LED, 0);
 }
 
-
+//sets the lights to red and dumps in the garbage location
 void garbage()  {
   analogWrite(RED_LED, 255);
   analogWrite(GREEN_LED, 0);
@@ -138,7 +121,7 @@ void garbage()  {
   analogWrite(BLUE_LED, 0);
 }
 
-
+//set the lights to a randomly selected color i many times and move the scoop in time with the lights
 void randomColors() {
   for(int i = 0; i < 20; i++) {
     setServoAngle(1, 60);
@@ -154,7 +137,7 @@ void randomColors() {
   analogWrite(BLUE_LED, 0);
 }
 
-
+//fades from red-green-blue-red, repeats x number of times, at the end it fades from red to off
 void colorFade()  {
   for(int x = 0; x < 1; x++)  {
     for(int i = 0; i < 255; i++)  {
@@ -184,6 +167,8 @@ void colorFade()  {
   }
 }
 
+
+//manually set the light color with serial inputs
 void red()  {
   analogWrite(RED_LED, 255);
   analogWrite(GREEN_LED, 0);
@@ -214,51 +199,39 @@ void lightsOff()  {
 
 void loop() {
   if (Serial.available() > 0) {
-    // read the incoming byte:
+// read the incoming byte:
     incomingByte = Serial.read();
 
-    // say what you got:
     Serial.print("I received: ");
     Serial.println(incomingByte);
   
-
+//serial inputs
     if(incomingByte == 114) {
       recycling();
     }
-  
     else if(incomingByte == 99) {
       compost();
     }
-  
     else if(incomingByte == 103) {
       garbage();
     }
-
     else if(incomingByte == 112) {
       randomColors();
     }
-
     else if(incomingByte == 102) {
       colorFade();
     }
-
     else if(incomingByte == 48) {
       lightsOff();
     }
-
     else if(incomingByte == 49) {
       red();
     }
-
     else if(incomingByte == 50) {
       green();
     }
-
     else if(incomingByte == 51) {
       blue();
     }
-
   }
-
-
 }
